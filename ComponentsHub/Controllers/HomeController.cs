@@ -40,10 +40,12 @@ namespace ComponentsHub.Controllers
                     htmlDoc.LoadHtml(responseContent);
 
                     //TODO parse html
-
+                    string price = htmlDoc.DocumentNode.SelectNodes("//table/tbody/tr")
+                                                    .First()
+                                                    .Attributes["price_break_price"].Value;
                     //Pass the parsed HTML to the view
-                    ViewBag.ParsedHtml = htmlDoc.DocumentNode.OuterHtml;
-                    //ViewBag.responseContent = responseContent;
+                    //ViewBag.ParsedHtml = htmlDoc.DocumentNode.OuterHtml;
+                    ViewBag.price = price;
                 }
                 catch (Exception ex)
                 {
