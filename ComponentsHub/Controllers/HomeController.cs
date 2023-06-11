@@ -39,7 +39,6 @@ namespace ComponentsHub.Controllers
                     HtmlDocument htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(responseContent);
 
-                    //TODO parse html
                     var rawParsedHtml = htmlDoc.DocumentNode.SelectNodes("//table/tbody/tr[@data-tooltip='Поставка со склада']/td").ToArray();
                     //Pass the parsed HTML to the view
                     //ViewBag.ParsedHtml = htmlDoc.DocumentNode.OuterHtml;
