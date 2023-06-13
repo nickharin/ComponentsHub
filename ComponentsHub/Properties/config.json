@@ -1,0 +1,10 @@
+{
+  "components": {
+    "name": "TPS4060",
+    "id": 139728
+  },
+  {
+    "name": "STM32F030CCT6",
+    "id": 524840
+  }
+}
