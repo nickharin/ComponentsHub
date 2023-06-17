@@ -29,21 +29,16 @@ namespace ComponentsHub.Controllers
                 string url = "https://office.promelec.ru/php/ajax-goods-price.php";
                 string requestData = "Item_ID=139728&ajax=true";
 
+
+                var components = ComponentModelCollection.ParseJSON(@"./Properties/config.json");
+
                 try
                 {
                     HttpContent content = new StringContent(requestData, Encoding.UTF8, "application/x-www-form-urlencoded");
                     HttpResponseMessage response = await client.PostAsync(url, content);
 
                     string responseContent = await response.Content.ReadAsStringAsync();
-
-                    HtmlDocument htmlDoc = new HtmlDocument();
-                    htmlDoc.LoadHtml(responseContent);
-
-                    var rawParsedHtml = htmlDoc.DocumentNode.SelectNodes("//table/tbody/tr[@data-tooltip='Поставка со склада']/td").ToArray();
-                    //Pass the parsed HTML to the view
-                    //ViewBag.ParsedHtml = htmlDoc.DocumentNode.OuterHtml;
-                    var parsedAmount = rawParsedHtml[2].InnerText;
-                    ViewBag.ParsedAmount = parsedAmount;
+                    ViewBag.ParsedAmount = ParseHtmlPromelec(responseContent);
                 }
                 catch (Exception ex)
                 {
@@ -51,6 +46,17 @@ namespace ComponentsHub.Controllers
                 }
             }
             return View();
+        }
+
+        public string ParseHtmlPromelec(string data) {
+
+            HtmlDocument htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(data);
+
+            var rawParsedHtml = htmlDoc.DocumentNode.SelectNodes("//table/tbody/tr[@data-tooltip='Поставка со склада']/td").ToArray();
+            //Pass the parsed HTML to the view
+            //ViewBag.ParsedHtml = htmlDoc.DocumentNode.OuterHtml;
+            return rawParsedHtml[2].InnerText;
         }
 
         public IActionResult Privacy()

@@ -1,10 +1,12 @@
 {
-  "components": {
-    "name": "TPS4060",
-    "id": 139728
-  },
-  {
-    "name": "STM32F030CCT6",
-    "id": 524840
-  }
+  "components": [
+    {
+      "name": "TPS54260DGQR",
+      "id": 139728
+    },
+    {
+      "name": "TPS54260DGQR",
+      "id": 139728
+    }
+  ]
 }
