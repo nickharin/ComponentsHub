@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -23,40 +24,62 @@ namespace ComponentsHub.Controllers
 
         public async Task<ActionResult> Index()
         {
+            List<ParsedComponent> parsedComponents = new List<ParsedComponent>();
+
             using (HttpClient client = new HttpClient())
             {
                 // TODO Move to separate class or file(json??)
                 string url = "https://office.promelec.ru/php/ajax-goods-price.php";
-                string requestData = "Item_ID=139728&ajax=true";
-
+                // string requestData = "Item_ID=139728&ajax=true";
+                List<string> requestData = new List<string>();
 
                 var components = ComponentModelCollection.ParseJSON(@"./Properties/config.json");
 
-                try
+                for (int i = 0; i < components.components.Count; i++)
                 {
-                    HttpContent content = new StringContent(requestData, Encoding.UTF8, "application/x-www-form-urlencoded");
-                    HttpResponseMessage response = await client.PostAsync(url, content);
-
-                    string responseContent = await response.Content.ReadAsStringAsync();
-                    ViewBag.ParsedAmount = ParseHtmlPromelec(responseContent);
+                    requestData.Add($"Item_ID={components.components[i].id}&ajax=true");
                 }
-                catch (Exception ex)
+
+                for (int i = 0; i < requestData.Count; i++)
                 {
-                    ViewBag.ParsedHtml = "Error: " + ex.Message;
+                    try
+                    {
+                        HttpContent content = new StringContent(requestData[i], Encoding.UTF8, "application/x-www-form-urlencoded");
+                        HttpResponseMessage response = await client.PostAsync(url, content);
+
+                        string responseString = await response.Content.ReadAsStringAsync();
+                        parsedComponents.Add(ParseHtmlPromelec(responseString));
+                        parsedComponents[i].PartNumber = components.components[i].name;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewBag.ParsedHtml = "Error: " + ex.Message;
+                    }
                 }
             }
-            return View();
+            return View(parsedComponents);
         }
 
-        public string ParseHtmlPromelec(string data) {
-
+        public ParsedComponent ParseHtmlPromelec(string data)
+        {
+            ParsedComponent component = new ParsedComponent();
             HtmlDocument htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(data);
 
-            var rawParsedHtml = htmlDoc.DocumentNode.SelectNodes("//table/tbody/tr[@data-tooltip='Поставка со склада']/td").ToArray();
-            //Pass the parsed HTML to the view
-            //ViewBag.ParsedHtml = htmlDoc.DocumentNode.OuterHtml;
-            return rawParsedHtml[2].InnerText;
+            try
+            {
+               var rawParsedHtml = htmlDoc.DocumentNode.SelectNodes("//table/tbody/tr[@data-tooltip='Поставка со склада']/td")
+                                                    .ToArray();
+                component.Amount = rawParsedHtml[2].InnerText;
+
+            }
+            catch
+            {
+                component.Amount = "ОШИБКА";
+            }
+           
+            return component;
         }
 
         public IActionResult Privacy()

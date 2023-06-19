@@ -2,10 +2,24 @@
     ViewBag.Title = "Home Page";
 }
 
+@model List<ParsedComponent>
 <h1>Промэлектроника</h1>
 <h2>Part Number</h2>
 test TPS4060
 <h3>Response:</h3>
 
-@*<div>@ViewBag.price</div>*@
-<div>@ViewBag.ParsedAmount</div>
+<table>
+    <tr>
+        <td>PartNumber</td>
+        <td>Amount</td>
+    </tr>
+    @foreach (ParsedComponent item in Model)
+    {
+        <tr>
+            <td>@item.PartNumber</td>
+            <td>@item.Amount</td>
+        </tr>
+    }
+</table>
+<div>@ViewBag.ParsedHtml</div>
+@*<div>@ViewBag.ParsedAmount</div>*@

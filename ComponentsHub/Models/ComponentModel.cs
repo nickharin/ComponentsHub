@@ -24,5 +24,13 @@ namespace ComponentsHub.Models
 			return components;
 		}
 	}
+
+	public class ParsedComponent
+	{
+		public string PartNumber { get; set; }
+        public string Price { get; set; }
+        public string Amount { get; set; }
+
+    }
 }
 
