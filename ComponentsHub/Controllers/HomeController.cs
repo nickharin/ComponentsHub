@@ -69,7 +69,7 @@ namespace ComponentsHub.Controllers
 
             try
             {
-               var rawParsedHtml = htmlDoc.DocumentNode.SelectNodes("//table/tbody/tr[@data-tooltip='Поставка со склада']/td")
+               var rawParsedHtml = htmlDoc.DocumentNode.SelectNodes("//table/tbody/tr[@price_unit='1']/td")
                                                     .ToArray();
                 component.Amount = rawParsedHtml[2].InnerText;
 
@@ -78,7 +78,19 @@ namespace ComponentsHub.Controllers
             {
                 component.Amount = "ОШИБКА";
             }
-           
+
+            try
+            {
+                var rawParsedHtml = htmlDoc.DocumentNode.SelectNodes("//*[@id='pb1']/td[3]").ToArray();
+                                                     
+                component.Price = rawParsedHtml[0].InnerText;
+
+            }
+            catch
+            {
+                component.Price = "ОШИБКА";
+            }
+
             return component;
         }
 

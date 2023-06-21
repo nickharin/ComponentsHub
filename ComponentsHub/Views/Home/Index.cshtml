@@ -3,23 +3,21 @@
 }
 
 @model List<ParsedComponent>
-<h1>Промэлектроника</h1>
-<h2>Part Number</h2>
-test TPS4060
-<h3>Response:</h3>
 
-<table>
+<table border='1' style='border-collapse: collapse;'>
+
     <tr>
         <td>PartNumber</td>
-        <td>Amount</td>
+        <td>Кол-во</td>
+        <td>Цена</td>
     </tr>
     @foreach (ParsedComponent item in Model)
     {
-        <tr>
-            <td>@item.PartNumber</td>
-            <td>@item.Amount</td>
-        </tr>
-    }
+<tr>
+    <td>@item.PartNumber</td>
+    <td>@item.Amount</td>
+    <td>@item.Price</td>
+</tr>}
 </table>
 <div>@ViewBag.ParsedHtml</div>
 @*<div>@ViewBag.ParsedAmount</div>*@
